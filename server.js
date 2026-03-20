@@ -4,6 +4,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const path = require('path'); // ✅ ADDED
 
 const User = require('./user');
 
@@ -11,14 +12,25 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+// ==========================
+// 🔐 SECRET KEY
+// ==========================
 const SECRET = "mysecretkey";
 
-// MongoDB
-mongoose.connect(process.env.MONGO_URI)
+// ==========================
+// 🔥 MONGODB CONNECTION
+// ==========================
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  dbName: "shippingDB"
+})
   .then(() => console.log('MongoDB Connected'))
   .catch(err => console.log(err));
 
-// Shipment Schema
+// ==========================
+// 📦 SHIPMENT SCHEMA
+// ==========================
 const ShipmentSchema = new mongoose.Schema({
   tracking: String,
   customer: String,
@@ -30,7 +42,9 @@ const ShipmentSchema = new mongoose.Schema({
 
 const Shipment = mongoose.model('Shipment', ShipmentSchema);
 
-// AUTH MIDDLEWARE
+// ==========================
+// 🔐 AUTH MIDDLEWARE
+// ==========================
 function auth(req, res, next) {
   const token = req.headers['authorization'];
   if (!token) return res.sendStatus(403);
@@ -42,7 +56,9 @@ function auth(req, res, next) {
   });
 }
 
-// REGISTER
+// ==========================
+// 👤 REGISTER
+// ==========================
 app.post('/register', async (req, res) => {
   const hashed = await bcrypt.hash(req.body.password, 10);
   const user = new User({
@@ -54,7 +70,9 @@ app.post('/register', async (req, res) => {
   res.json("User created");
 });
 
-// LOGIN
+// ==========================
+// 🔑 LOGIN
+// ==========================
 app.post('/login', async (req, res) => {
   const user = await User.findOne({ username: req.body.username });
   if (!user) return res.status(400).send("User not found");
@@ -66,7 +84,9 @@ app.post('/login', async (req, res) => {
   res.json({ token });
 });
 
-// CREATE SHIPMENT
+// ==========================
+// 📦 CREATE SHIPMENT
+// ==========================
 app.post('/create', async (req, res) => {
   const { customer, address, item, price } = req.body;
   const tracking = 'NW-' + Math.floor(Math.random() * 1000000);
@@ -77,17 +97,34 @@ app.post('/create', async (req, res) => {
   res.json({ tracking });
 });
 
-// TRACK
+// ==========================
+// 🔍 TRACK SHIPMENT
+// ==========================
 app.get('/track/:tracking', async (req, res) => {
   const shipment = await Shipment.findOne({ tracking: req.params.tracking });
   res.json(shipment);
 });
 
-// PROTECTED DASHBOARD
+// ==========================
+// 📊 PROTECTED DASHBOARD
+// ==========================
 app.get('/all', auth, async (req, res) => {
   const shipments = await Shipment.find();
   res.json(shipments);
 });
 
-const PORT = process.env.PORT || 3000;
+// ==========================
+// 🌐 SERVE FRONTEND (THIS IS WHAT YOU NEEDED)
+// ==========================
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// ==========================
+// 🚀 START SERVER
+// ==========================
+const PORT = process.env.PORT || 10000;
+
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
