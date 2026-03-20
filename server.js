@@ -19,7 +19,17 @@ app.get("/login", (req, res) => {
 app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
+app.get("/create-admin", async (req, res) => {
+  const hashed = await bcrypt.hash("123456", 10);
 
+  const user = new User({
+    username: "admin",
+    password: hashed
+  });
+
+  await user.save();
+  res.send("Admin created");
+});
 // ==========================
 // 🔐 SECRET KEY
 // ==========================
@@ -134,5 +144,7 @@ app.get('/', (req, res) => {
 // 🚀 START SERVER
 // ==========================
 const PORT = process.env.PORT || 10000;
+
+
 
 app.listen(PORT, () => console.log('Server running on port ' + PORT));

@@ -101,7 +101,8 @@
 
       } catch (err) {
         console.error(err);
-        alert("Login error");
+        const text = await res.text();
+alert(text);
       }
     }
 
