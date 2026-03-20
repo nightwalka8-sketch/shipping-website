@@ -1,112 +1,135 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Global Shipping System</title>
+  <title>Night Walka Logistics</title>
   <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <div class="navbar">
-    🚚 Global Shipping System
+<!-- NAVBAR -->
+<div class="navbar">
+  <div class="logo">🚚 Night Walka</div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#services">Services</a>
+    <a href="#track">Track</a>
+    <a href="#contact">Contact</a>
   </div>
+</div>
 
-  <div class="container">
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1>Global Logistics Made Simple</h1>
+    <p>Fast. Secure. Reliable shipping worldwide.</p>
+    <button onclick="scrollToTrack()">Track Shipment</button>
+  </div>
+</section>
 
-    <!-- TRACK SECTION -->
+<!-- SERVICES -->
+<section id="services" class="section">
+  <h2>Our Services</h2>
+
+  <div class="grid">
     <div class="card">
-      <h2>Track Your Shipment</h2>
-      <input id="tracking" placeholder="Enter Tracking Number">
-      <button onclick="track()">Track</button>
-
-      <p id="result"></p>
+      <h3>🚚 Shipping</h3>
+      <p>Worldwide fast delivery solutions</p>
     </div>
 
-    <hr>
-
-    <!-- LOGIN SECTION -->
     <div class="card">
-      <h2>Admin Login</h2>
-
-      <input id="username" placeholder="Username">
-      <input id="password" type="password" placeholder="Password">
-
-      <button onclick="login()">Login</button>
+      <h3>🔐 Secure Handling</h3>
+      <p>High-value shipment protection</p>
     </div>
 
+    <div class="card">
+      <h3>📍 Tracking</h3>
+      <p>Real-time shipment updates</p>
+    </div>
   </div>
+</section>
 
-  <script>
-    const API = "https://shipping-website-lpks.onrender.com";
+<!-- TRACK -->
+<section id="track" class="section glass">
+  <h2>Track Your Shipment</h2>
 
-    // ================= TRACK =================
-    async function track() {
-      const tracking = document.getElementById("tracking").value;
+  <input id="tracking" placeholder="Enter Tracking Number">
+  <button onclick="track()">Track</button>
 
-      if (!tracking) {
-        alert("Enter tracking number");
-        return;
-      }
+  <p id="result"></p>
+</section>
 
-      try {
-        const res = await fetch(API + "/track/" + tracking);
-        const data = await res.json();
+<!-- LOGIN -->
+<section class="section">
+  <h2>Admin Login</h2>
 
-        if (!data) {
-          document.getElementById("result").innerText = "Not found";
-          return;
-        }
+  <div class="card login-box">
+    <input id="username" placeholder="Username">
+    <input id="password" type="password" placeholder="Password">
+    <button onclick="login()">Login</button>
+  </div>
+</section>
 
-        document.getElementById("result").innerText =
-          "Customer: " + data.customer +
-          " | Item: " + data.item +
-          " | Address: " + data.address +
-          " | Price: $" + data.price;
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <h2>Contact Us</h2>
+  <p>Email: support@nightwalka.com</p>
+  <p>Phone: +233 XXX XXX XXX</p>
+</section>
 
-      } catch (err) {
-        console.error(err);
-        alert("Error tracking shipment");
-      }
-    }
+<!-- FOOTER -->
+<footer>
+  © 2026 Night Walka Logistics
+</footer>
 
-    // ================= LOGIN =================
-    async function login() {
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
+<script>
+const API = "https://shipping-website-lpks.onrender.com";
 
-      if (!username || !password) {
-        alert("Enter username and password");
-        return;
-      }
+// TRACK
+async function track() {
+  const tracking = document.getElementById("tracking").value;
 
-      try {
-        const res = await fetch(API + "/login", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ username, password })
-        });
+  const res = await fetch(API + "/track/" + tracking);
+  const data = await res.json();
 
-        const data = await res.json();
+  if (!data) {
+    document.getElementById("result").innerText = "Not found";
+    return;
+  }
 
-        if (data.token) {
-          localStorage.setItem("token", data.token);
+  document.getElementById("result").innerText =
+    "Customer: " + data.customer +
+    " | Item: " + data.item +
+    " | Status: " + (data.status || "Pending");
+}
 
-          // ✅ redirect to dashboard
-          window.location.href = "/dashboard";
-        } else {
-          alert("Login failed");
-        }
+// LOGIN
+async function login() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
 
-      } catch (err) {
-        console.error(err);
-        const text = await res.text();
-alert(text);
-      }
-    }
+  const res = await fetch(API + "/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ username, password })
+  });
 
-  </script>
+  const data = await res.json();
+
+  if (data.token) {
+    localStorage.setItem("token", data.token);
+    window.location.href = "/dashboard";
+  } else {
+    alert("Login failed");
+  }
+}
+
+function scrollToTrack() {
+  document.getElementById("track").scrollIntoView({ behavior: "smooth" });
+}
+</script>
 
 </body>
 </html>

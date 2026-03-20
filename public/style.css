@@ -1,77 +1,113 @@
 body {
   margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6f9;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f172a;
+  color: white;
 }
 
 /* NAVBAR */
 .navbar {
-  background: linear-gradient(90deg, #c8102e, #003a8f);
-  color: white;
-  padding: 15px 25px;
   display: flex;
   justify-content: space-between;
+  padding: 20px 40px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.nav-links a {
+  margin-left: 20px;
+  color: white;
+  text-decoration: none;
+}
+
+/* HERO */
+.hero {
+  height: 90vh;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  text-align: center;
+  background: linear-gradient(135deg, #1e3a8a, #dc2626);
 }
 
-.navbar h2 {
-  margin: 0;
+.hero h1 {
+  font-size: 48px;
 }
 
-/* CONTAINER */
-.container {
-  padding: 30px;
+.hero button {
+  margin-top: 20px;
 }
 
-/* CARDS */
+/* SECTION */
+.section {
+  padding: 80px 20px;
+  text-align: center;
+}
+
+/* GRID */
+.grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+/* CARD */
 .card {
-  background: white;
-  padding: 20px;
-  margin-bottom: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 15px;
+  width: 250px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
 }
 
-/* INPUTS */
+.card:hover {
+  transform: translateY(-10px);
+}
+
+/* GLASS */
+.glass {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+}
+
+/* INPUT */
 input {
-  width: 100%;
+  display: block;
+  margin: 10px auto;
   padding: 12px;
-  margin: 10px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-/* BUTTONS */
-button {
-  padding: 10px 15px;
+  width: 260px;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+}
+
+/* BUTTON */
+button {
+  padding: 12px 20px;
+  border: none;
+  background: linear-gradient(45deg, red, blue);
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
-  margin-right: 5px;
 }
 
-.btn-primary {
-  background: #003a8f;
-  color: white;
+/* LOGIN BOX */
+.login-box {
+  width: 300px;
+  margin: auto;
 }
 
-.btn-danger {
-  background: #c8102e;
-  color: white;
-}
-
-.btn-warning {
-  background: #ff9800;
-  color: white;
-}
-
-/* TABLE */
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-th, td {
-  padding: 12px;
-  border-bottom: 1px solid #ddd;
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 30px;
+  background: #020617;
 }
