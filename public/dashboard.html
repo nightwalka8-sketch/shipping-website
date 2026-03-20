@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="navbar">
+  <h2>🚚 Night Walka Logistics</h2>
+  <button onclick="logout()" class="btn-danger">Logout</button>
+</div>
+
+<div class="container">
+
+<div class="card">
+<h3>Create Shipment</h3>
+
+<input id="customer" placeholder="Customer">
+<input id="address" placeholder="Address">
+<input id="item" placeholder="Item">
+<input id="price" placeholder="Price">
+
+<button class="btn-primary" onclick="createShipment()">Create</button>
+</div>
+
+<div class="card">
+<h3>All Shipments</h3>
+
+<table>
+<thead>
+<tr>
+<th>Customer</th>
+<th>Tracking</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody id="list"></tbody>
+</table>
+
+</div>
+
+</div>
+
+<script>
+const API="https://shipping-website-lpks.onrender.com";
+
+function logout(){
+  localStorage.removeItem("token");
+  window.location.href="login.html";
+}
+
+async function createShipment(){
+  await fetch(API+"/create",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      customer:customer.value,
+      address:address.value,
+      item:item.value,
+      price:price.value
+    })
+  });
+
+  load();
+}
+
+async function load(){
+  const res=await fetch(API+"/all",{
+    headers:{
+      "authorization":localStorage.getItem("token")
+    }
+  });
+
+  const data=await res.json();
+
+  list.innerHTML=data.map(s=>`
+    <tr>
+      <td>${s.customer}</td>
+      <td>${s.tracking}</td>
+      <td>${s.status}</td>
+      <td>
+        <button class="btn-warning" onclick="updateStatus('${s._id}')">Update</button>
+        <button class="btn-danger" onclick="deleteShipment('${s._id}')">Delete</button>
+      </td>
+    </tr>
+  `).join("");
+}
+
+async function deleteShipment(id){
+  await fetch(API+"/delete/"+id,{
+    method:"DELETE",
+    headers:{
+      "authorization":localStorage.getItem("token")
+    }
+  });
+  load();
+}
+
+async function updateStatus(id){
+  const status = prompt("Enter new status:");
+  await fetch(API+"/update/"+id,{
+    method:"PUT",
+    headers:{
+      "Content-Type":"application/json",
+      "authorization":localStorage.getItem("token")
+    },
+    body:JSON.stringify({status})
+  });
+  load();
+}
+
+load();
+</script>
+
+</body>
+</html>

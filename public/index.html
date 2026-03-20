@@ -1,152 +1,111 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Shipping System</title>
-  <style>
-    body {
-      font-family: Arial;
-      margin: 0;
-      background: #f4f4f4;
-    }
-
-    header {
-      background: #d40511;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 24px;
-    }
-
-    .container {
-      padding: 20px;
-      text-align: center;
-    }
-
-    input, button {
-      padding: 10px;
-      margin: 5px;
-      width: 250px;
-    }
-
-    button {
-      background: #d40511;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #a3030d;
-    }
-
-    .card {
-      background: white;
-      padding: 20px;
-      margin-top: 20px;
-      display: inline-block;
-      text-align: left;
-    }
-  </style>
+  <title>Global Shipping System</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
-  🚚 Global Shipping System
-</header>
+  <div class="navbar">
+    🚚 Global Shipping System
+  </div>
 
-<div class="container">
+  <div class="container">
 
-  <h2>Track Your Shipment</h2>
-
-  <input type="text" id="tracking" placeholder="Enter Tracking Number">
-  <br>
-  <button onclick="track()">Track</button>
-
-  <div id="result"></div>
-
-  <hr>
-
-  <h2>Admin Login</h2>
-
-  <input type="text" id="username" placeholder="Username">
-  <br>
-  <input type="password" id="password" placeholder="Password">
-  <br>
-  <button onclick="login()">Login</button>
-
-  <div id="admin"></div>
-
-</div>
-
-<script>
-
-let token = "";
-
-async function track() {
-  const tracking = document.getElementById("tracking").value;
-
-  const res = await fetch(`/track/${tracking}`);
-  const data = await res.json();
-
-  if (!data) {
-    document.getElementById("result").innerHTML = "Not found";
-    return;
-  }
-
-  document.getElementById("result").innerHTML = `
+    <!-- TRACK SECTION -->
     <div class="card">
-      <h3>Tracking: ${data.tracking}</h3>
-      <p><b>Customer:</b> ${data.customer}</p>
-      <p><b>Item:</b> ${data.item}</p>
-      <p><b>Address:</b> ${data.address}</p>
-      <p><b>Status:</b> ${data.status}</p>
+      <h2>Track Your Shipment</h2>
+      <input id="tracking" placeholder="Enter Tracking Number">
+      <button onclick="track()">Track</button>
+
+      <p id="result"></p>
     </div>
-  `;
-}
 
-async function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+    <hr>
 
-  const res = await fetch('/login', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ username, password })
-  });
+    <!-- LOGIN SECTION -->
+    <div class="card">
+      <h2>Admin Login</h2>
 
-  const data = await res.json();
+      <input id="username" placeholder="Username">
+      <input id="password" type="password" placeholder="Password">
 
-  token = data.token;
+      <button onclick="login()">Login</button>
+    </div>
 
-  document.getElementById("admin").innerHTML = `
-    <h3>Create Shipment</h3>
-    <input id="customer" placeholder="Customer"><br>
-    <input id="address" placeholder="Address"><br>
-    <input id="item" placeholder="Item"><br>
-    <input id="price" placeholder="Price"><br>
-    <button onclick="createShipment()">Create</button>
-  `;
-}
+  </div>
 
-async function createShipment() {
-  const customer = document.getElementById("customer").value;
-  const address = document.getElementById("address").value;
-  const item = document.getElementById("item").value;
-  const price = document.getElementById("price").value;
+  <script>
+    const API = "https://shipping-website-lpks.onrender.com";
 
-  const res = await fetch('/create', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ customer, address, item, price })
-  });
+    // ================= TRACK =================
+    async function track() {
+      const tracking = document.getElementById("tracking").value;
 
-  const data = await res.json();
+      if (!tracking) {
+        alert("Enter tracking number");
+        return;
+      }
 
-  alert("Tracking Number: " + data.tracking);
-}
+      try {
+        const res = await fetch(API + "/track/" + tracking);
+        const data = await res.json();
 
-</script>
+        if (!data) {
+          document.getElementById("result").innerText = "Not found";
+          return;
+        }
+
+        document.getElementById("result").innerText =
+          "Customer: " + data.customer +
+          " | Item: " + data.item +
+          " | Address: " + data.address +
+          " | Price: $" + data.price;
+
+      } catch (err) {
+        console.error(err);
+        alert("Error tracking shipment");
+      }
+    }
+
+    // ================= LOGIN =================
+    async function login() {
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      if (!username || !password) {
+        alert("Enter username and password");
+        return;
+      }
+
+      try {
+        const res = await fetch(API + "/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ username, password })
+        });
+
+        const data = await res.json();
+
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+
+          // ✅ redirect to dashboard
+          window.location.href = "/dashboard";
+        } else {
+          alert("Login failed");
+        }
+
+      } catch (err) {
+        console.error(err);
+        alert("Login error");
+      }
+    }
+
+  </script>
 
 </body>
 </html>
