@@ -3,6 +3,9 @@
 <head>
   <title>Night Walka Logistics</title>
   <link rel="stylesheet" href="style.css">
+
+  <!-- ICONS -->
+  <script src="https://unpkg.com/feather-icons"></script>
 </head>
 
 <body>
@@ -20,7 +23,7 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-content">
+  <div class="hero-content fade-in">
     <h1>Global Logistics Made Simple</h1>
     <p>Fast. Secure. Reliable shipping worldwide.</p>
     <button onclick="scrollToTrack()">Track Shipment</button>
@@ -29,28 +32,31 @@
 
 <!-- SERVICES -->
 <section id="services" class="section">
-  <h2>Our Services</h2>
+  <h2 class="fade-in">Our Services</h2>
 
   <div class="grid">
-    <div class="card">
-      <h3>🚚 Shipping</h3>
+    <div class="card fade-in">
+      <i data-feather="truck"></i>
+      <h3>Shipping</h3>
       <p>Worldwide fast delivery solutions</p>
     </div>
 
-    <div class="card">
-      <h3>🔐 Secure Handling</h3>
+    <div class="card fade-in">
+      <i data-feather="shield"></i>
+      <h3>Secure Handling</h3>
       <p>High-value shipment protection</p>
     </div>
 
-    <div class="card">
-      <h3>📍 Tracking</h3>
+    <div class="card fade-in">
+      <i data-feather="map-pin"></i>
+      <h3>Tracking</h3>
       <p>Real-time shipment updates</p>
     </div>
   </div>
 </section>
 
 <!-- TRACK -->
-<section id="track" class="section glass">
+<section id="track" class="section glass fade-in">
   <h2>Track Your Shipment</h2>
 
   <input id="tracking" placeholder="Enter Tracking Number">
@@ -60,7 +66,7 @@
 </section>
 
 <!-- LOGIN -->
-<section class="section">
+<section class="section fade-in">
   <h2>Admin Login</h2>
 
   <div class="card login-box">
@@ -70,8 +76,13 @@
   </div>
 </section>
 
+<!-- IMAGE SECTION -->
+<section class="image-section fade-in">
+  <h2>Trusted Global Delivery</h2>
+</section>
+
 <!-- CONTACT -->
-<section id="contact" class="section">
+<section id="contact" class="section fade-in">
   <h2>Contact Us</h2>
   <p>Email: support@nightwalka.com</p>
   <p>Phone: +233 XXX XXX XXX</p>
@@ -126,9 +137,24 @@ async function login() {
   }
 }
 
+// SCROLL
 function scrollToTrack() {
   document.getElementById("track").scrollIntoView({ behavior: "smooth" });
 }
+
+// ANIMATION ON SCROLL
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("show");
+    }
+  });
+});
+
+document.querySelectorAll(".fade-in").forEach(el => observer.observe(el));
+
+// ICONS
+feather.replace();
 </script>
 
 </body>
